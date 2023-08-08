@@ -3,8 +3,11 @@
 
 {% block content %}
 
-<h1>{{project.movie}}</h1>
-<br>
-<p>{{project.nominee}}</p>
-
+<h1>{{projects.title}}</h1>
+<hr>
+{% for tag in projects.tag.all %}
+<span style="border:1px solid grey">{{tag}}</span>
+{%  endfor %}
+<p>{{projects.description}}</p>
+<hr>
 {% endblock %}
