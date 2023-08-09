@@ -12,3 +12,8 @@ def projects(reque):
 def parts_(request, pk):
     projectObj = Project.objects.get(id=pk)
     return render(request, 'projects/parts_.html', {'projects': projectObj})
+
+
+def createProject(request):
+    context = {}
+    return render(request, 'projects/project_form.html')
