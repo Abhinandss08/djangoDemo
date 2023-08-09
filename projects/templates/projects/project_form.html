@@ -3,8 +3,10 @@
 
 <h1>Project Form</h1>
 
-<form method="post">
-
+<form action="" method="post">
+    {{form.as_p}}
+    {% csrf_token %}
+    <input type="submit">
 </form>
 
 {% endblock %}
