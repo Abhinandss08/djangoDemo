@@ -24,7 +24,7 @@ class Profile(models.Model):
                           primary_key=True, editable=False)
 
     def __str__(self):
-        return self.user.username
+        return self.username
 
 
 class Skill(models.Model):
@@ -38,4 +38,3 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
-
