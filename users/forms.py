@@ -16,3 +16,10 @@ class CustomUserCreationForm(UserCreationForm):
         labels = {
             'first_name': 'Name'
         }
+
+    # Overridden the super method and looped through every single
+    # field and added a class of input
+    def __init__(self, *args, **kwargs):
+        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'input'})
