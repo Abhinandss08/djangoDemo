@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--To access static files in html-->
 {% load static %}
 <html lang="en">
 <head>
@@ -19,16 +20,20 @@
 </head>
 <body>
 {% include 'navbar.html' %}
+<!--Customising django built-in error/alert messages-->
 {% if messages %}
-<ul class="messages">
     {% for message in messages %}
-    <li {% if message.tags %} class="{{ message.tags }}"{% endif %} >{{ message }}</li>
+<!--Django built-in message tag in views.py exactly matches the class-name in html-->
+        <div class="alert alert--{{message.tags}}">
+            <p class="alert__message">{{message}}</p>
+            <p class="alert__close">X</p>
+        </div>
     {% endfor %}
-</ul>
 {% endif %}
-{% block content%}
+{% block content %}
 
-{% endblock content%}
+{% endblock %}
 
 </body>
+<script src="{% static 'uikit/app.js' %}"></script>
 </html>

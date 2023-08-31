@@ -1,26 +1,104 @@
 {% extends 'main.html' %}
+<!--To access static files in html-->
+{% load static %}
 
 {% block content %}
 
 <!--If the page variable is register render out register form else login form-->
 {% if page == 'register' %}
-<h1>Register User</h1>
-<form action="{% url 'register' %}" method="post">
-    {% csrf_token %}
-<!--Wrap paragraph tag around each input field for better viewing of the page-->
-    {{form.as_p}}
-    <input type="submit" value="Register User" />
-</form>
-<!--Prompt the user to the login form if already have an account-->
-<p>Already have an account?<a href="{% url 'login' %}">Login</a></p>
+
+<div class="auth">
+    <div class="card">
+        <div class="auth__header text-center">
+            <!--     To include/identify a static file in a html tag use 'static' keyword-->
+            <a href="/">
+                <img src="{% static 'images/icon.svg' %}" alt="icon"/>
+            </a>
+            <h3>Register an Account</h3>
+            <p>Create a new developer account</p>
+        </div>
+
+        <form action="{% url 'register' %}" method="post" class="form auth__form">
+            <!--      To prevent Cross-Site Request Forgery attacks-->
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form__field">
+                <label for="formInput#text">{{field.label}} </label>
+                {{field}}
+
+<!--            For providing helper texts for the fields in the form-->
+<!--                {% if field.help_text %}-->
+<!--                     <small>{{field.help_text}}</small>-->
+<!--                {% endif %}-->
+
+<!--            To display errors of the fields in the form-->
+                {% for error in field.errors %}
+                    <p style="color: red;">{{error}}</p>
+                {% endfor %}
+
+            </div>
+            {% endfor %}
+            <div class="auth__actions">
+                <input class="btn btn--sub btn--lg" type="submit" value="Sign  In"/>
+            </div>
+        </form>
+        <!--Prompt the user to the login form if already have an account-->
+        <div class="auth__alternative">
+            <p>Already have an Account?</p>
+            <a href="{% url 'login' %}">Log In</a>
+        </div>
+    </div>
+</div>
 {% else %}
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="username"/>
-    <input type="password" name="password" placeholder="Enter password"/>
-    <input type="submit" value="Login"/>
-<!--Prompt the user to the register form if they don't have an account-->
-    <p>Don't have an account?<a href="{% url 'register' %}">Sign Up</a></p>
-</form>
+
+<div class="auth">
+    <div class="card">
+        <div class="auth__header text-center">
+            <!--     To include/identify a static file in a html tag use 'static' keyword-->
+            <a href="/">
+                <img src="{% static 'images/icon.svg' %}" alt="icon"/>
+            </a>
+            <h3>Account Login</h3>
+            <p>Hello Developer, Welcome Back!</p>
+        </div>
+        <!--    Redirect to 'login' url present in the urls.py and to the 'profiles' page through views.py on successful form submission-->
+        <form class="form auth__form" action="{% url 'login' %}" method="post">
+            <!--        To prevent Cross-Site Request Forgery attacks-->
+            {% csrf_token %}
+            <!-- Input:Username -->
+            <div class="form__field">
+                <label for="formInput#text">Username: </label>
+                <input
+                        class="input input--text"
+                        id="formInput#text"
+                        type="text"
+                        name="username"
+                        placeholder="Enter your username..."
+                />
+            </div>
+
+            <!-- Input:Password -->
+            <div class="form__field">
+                <label for="formInput#password">Password: </label>
+                <input
+                        class="input input--password"
+                        id="formInput#passowrd"
+                        type="password"
+                        name="password"
+                        placeholder="••••••••"
+                />
+            </div>
+            <div class="auth__actions">
+                <input class="btn btn--sub btn--lg" type="submit" value="Log In"/>
+                <a href="forgetpassword.html">Forget Password?</a>
+            </div>
+        </form>
+        <div class="auth__alternative">
+            <!--Prompt the user to the register form if they don't have an account-->
+            <p>Don’t have an Account?</p>
+            <a href="{% url 'register' %}">Sign Up</a>
+        </div>
+    </div>
+</div>
 {% endif %}
 {% endblock %}
