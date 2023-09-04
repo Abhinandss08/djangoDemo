@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm
 from .models import Profile
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 
 def loginUser(request):
@@ -72,14 +73,31 @@ def registerUser(request):
 def profiles(request):
     profiles = Profile.objects.all()
     context = {'profiles': profiles}
-    print(context)
     return render(request, 'users/profiles.html', context)
 
 
+# To view each developer profiles without editing access
 def userProfile(request, pk):
     profile = Profile.objects.get(id=pk)
+    # All skills that have description
     topSkils = profile.skill_set.exclude(description__exact="")
+    # Skills that have no description
     otherSkills = profile.skill_set.filter(description="")
     context = {'profile': profile, 'topSkills': topSkils,
                'otherSkills': otherSkills}
     return render(request, 'users/user-profile.html', context)
+
+
+# login_required decorator makes sure that the user is logged-in
+# then only can access the account page
+@login_required(login_url='login')
+# Complete access over own profile for authenticated developers
+def userAccount(request):
+    # To access the logged-in user without any
+    # primary key (one-to-one relationship)
+    # profile = Profile.objects.get_or_create(user=request.user)
+    profile = request.user.profile
+    skills = profile.skill_set.all()
+    projects = profile.project_set.all()
+    context = {'profile': profile, 'skills': skills, 'projects': projects}
+    return render(request, 'users/account.html', context)
