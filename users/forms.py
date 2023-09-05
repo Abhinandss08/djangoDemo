@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.forms import ModelForm
+from .models import Profile
 
 
 # Class inherited from django builtin 'UserCreationForm' which has
@@ -18,8 +19,25 @@ class CustomUserCreationForm(UserCreationForm):
         }
 
     # Overridden the super method and looped through every single
-    # field and added a class of input
+    # field and added a class of input for styling the form field
     def __init__(self, *args, **kwargs):
         super(CustomUserCreationForm, self).__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'input'})
+
+
+# Customising the form to edit User account
+class ProfileForm(ModelForm):
+    class Meta:
+        model = Profile
+        # To avoid selecting users manually fields are included
+        fields = ['name', 'email', 'username', 'location', 'short_intro',
+                  'bio', 'profile_image', 'social_github', 'social_twitter',
+                  'social_linkedin', 'social_youtube', 'social_website']
+
+    # Overridden the super method and looped through every single
+    # field and added a class of input for styling the form field
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
         for name, field in self.fields.items():
             field.widget.attrs.update({'class': 'input'})

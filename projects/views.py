@@ -17,18 +17,29 @@ def parts_(request, pk):
 
 @login_required(login_url='login')
 def createProject(request):
+    # To get the currently logged-in user
+    profile = request.user.profile
     form = ProjectForm()
     if request.method == 'POST':
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            # To get the instance of the current project
+            project = form.save(commit=False)
+            # To get an owner connected to a profile model and to track
+            # the recently added project in account section
+            project.owner = profile
+            project.save()
             return redirect('projects')
     context = {'form': form}
     return render(request, 'projects/project_form.html', context)
 
 
 def updateProject(request, pk):
-    project = Project.objects.get(id=pk)
+    profile = request.user.profile
+    # Querying the logged-in user's profile and getting
+    # all the children (projects), thus updating the project
+    # limited to the logged-in owner
+    project = profile.project_set.get(id=pk)
     form = ProjectForm(instance=project)
     if request.method == 'POST':
         form = ProjectForm(request.POST, request.FILES, instance=project)
@@ -40,7 +51,8 @@ def updateProject(request, pk):
 
 
 def deleteProject(request, pk):
-    project = Project.objects.get(id=pk)
+    profile = request.user.profile
+    project = profile.project_set.get(id=pk)
     if request.method == 'POST':
         project.delete()
         return redirect('projects')

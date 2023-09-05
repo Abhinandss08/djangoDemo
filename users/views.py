@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, ProfileForm
 from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -61,7 +61,9 @@ def registerUser(request):
             # Django way to output messages
             messages.success(request, 'User account is created!')
             login(request, user)
-            return redirect('profiles')
+            # Prompts to the html form where user can
+            # modify data once registered
+            return redirect('edit-account')
         else:
             # To display an error message when sign-up is messed up
             messages.error(request,
@@ -101,3 +103,25 @@ def userAccount(request):
     projects = profile.project_set.all()
     context = {'profile': profile, 'skills': skills, 'projects': projects}
     return render(request, 'users/account.html', context)
+
+
+@login_required(login_url='login')
+def editAccount(request):
+    profile = request.user.profile
+    # To prefill form-fields before editing
+    form = ProfileForm(instance=profile)
+    if request.method == 'POST':
+        # To process static images from form-data and instance
+        # used to know exactly which profile we need to update
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid:
+            form.save()
+            return redirect('account')
+    context = {'form': form}
+    return render(request, 'users/profile_form.html', context)
+
+
+@login_required(login_url='login')
+def createSkill(request):
+    context = {}
+    return render(request, 'users/skill_form.html', context)
