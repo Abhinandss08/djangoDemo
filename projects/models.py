@@ -22,6 +22,11 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
+    # To sort the projects based on the date created from model fields and
+    # when '-created' is used recently added projects are displayed at first
+    class Meta:
+        ordering = ['created']
+
 
 class Review(models.Model):
     VOTE_TYPE = (
