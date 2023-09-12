@@ -1,0 +1,29 @@
+<!--  To avoid pagination when we have large number of results and shows pagination when present-->
+  {% if queryset.has_other_pages %}
+  <div class="pagination">
+    <ul class="container">
+<!--  To display the previous button with an arrow on it unless the current page is not the first page-->
+      {% if queryset.has_previous %}
+      <li ><a href="?page={{queryset.previous_page_number}}" class="btn page-link" data-page="{{queryset.previous_page_number}}">&#10094; prev</a></li>
+      {% endif %}
+
+<!--  To output the paginator, specifically the range of page buttons-->
+      {% for page in custom_range %}
+<!--  To know in which page we are on-->
+      {% if page == queryset.number %}
+<!--  To navigate through buttons to the desired page-->
+      <li><a href="?page={{page}}" class="btn page-link btn--sub" data-page="{{page}}">{{page}}</a></li>
+      {% else %}
+      <li><a href="?page={{page}}" class="btn page-link" data-page="{{page}}">{{page}}</a></li>
+      {% endif %}
+      {% endfor %}
+
+<!--  To display the next button with an arrow on it unless the current page is not the last page-->
+      {% if queryset.has_next %}
+      <li ><a href="?page={{queryset.next_page_number}}" class="btn page-link" data-page="{{queryset.next_page_number}}">Next &#10095;</a></li>
+      {% endif %}
+
+    </ul>
+
+  </div>
+  {% endif %}
